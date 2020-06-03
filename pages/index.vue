@@ -44,8 +44,8 @@
       <v-col v-for="playlist in playlists" :key="playlist.title" :cols="3">
         <v-card>
           <v-img
-            v-if="playlist.src != null"
-            :src="playlist.src"
+            v-if="playlist.url != null"
+            :src="playlist.url"
             class="white--text align-end"
             gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
             height="200px"
@@ -70,7 +70,7 @@ export default {
   components: {},
   data() {
     return {
-      dialog: true,
+      dialog: false,
       valid: true,
       title: '',
       titleRules: [
