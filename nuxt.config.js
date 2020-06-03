@@ -83,5 +83,27 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
+  },
+  manifest: {
+    name: 'Simple Playlists',
+    short_name: 'SP lists',
+    title: 'Simple Playlists',
+    description: 'シンプルなプレイリスト',
+    lang: 'ja',
+    theme_color: '#ffffff',
+    background_color: '#ffffff',
+    scope: '/',
+    icons: [
+      {
+        src: 'v.png',
+        sizes: '72x72',
+        type: 'image/png'
+      },
+      {
+        src: 'v.png',
+        sizes: '256x256',
+        type: 'image/png'
+      }
+    ]
   }
 }
