@@ -4,6 +4,7 @@
       <v-col v-for="card in cards" :key="card.title" :cols="3">
         <v-card>
           <v-img
+            v-if="card.src != null"
             :src="card.src"
             class="white--text align-end"
             gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
@@ -48,7 +49,12 @@ export default {
           src: 'https://picsum.photos/200?random=4',
           flex: 6
         },
-        { title: 'ramdom5', src: 'https://picsum.photos/200?random=5', flex: 6 }
+        {
+          title: 'ramdom5',
+          src: 'https://picsum.photos/200?random=5',
+          flex: 6
+        },
+        { title: 'tst', src: null, flex: 6 }
       ]
     }
   }
