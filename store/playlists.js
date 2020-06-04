@@ -28,7 +28,7 @@ export const mutations = {
   add(state, title) {
     state.playlists.push({
       title,
-      url: null
+      url: 'https://picsum.photos/200?random=5'
     })
   },
   remove(state, { playlist }) {

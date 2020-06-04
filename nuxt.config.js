@@ -82,7 +82,11 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) {
+      if (ctx.isDev && ctx.isClient) {
+        config.devtool = 'inline-cheap-module-source-map'
+      }
+    }
   },
   manifest: {
     name: 'Simple Playlists',

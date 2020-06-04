@@ -28,10 +28,7 @@
                 required
               ></v-text-field>
               <v-spacer></v-spacer>
-              <v-btn
-                color="green darken-1"
-                text
-                @click=";(dialog = false), validate"
+              <v-btn color="green darken-1" text @click="addPlaylist"
                 >Finish</v-btn
               >
             </v-form>
@@ -90,9 +87,15 @@ export default {
     }
   },
   methods: {
-    addPlaylist(e) {
-      this.$store.commit('playlists/add', e.target.value)
-      e.target.value = ''
+    addPlaylist() {
+      this.dialog = false
+      console.log('this.title:', this.title)
+      // const playlist = {
+      //   title: this.title,
+      //   url: 'https://picsum.photos/200?random=1'
+      // }
+      // console.log('e.target.value:', e.target.value)
+      this.$store.commit('playlists/add', this.title)
     },
     ...mapMutations({
       toggle: 'playlists/toggle'
