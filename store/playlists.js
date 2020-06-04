@@ -1,37 +1,27 @@
 export const state = () => ({
   playlists: [
     {
-      title: 'ramdom1',
-      url: 'https://picsum.photos/200?random=1'
-    },
-    {
-      title: 'ramdom2',
-      url: 'https://picsum.photos/200?random=2'
-    },
-    {
-      title: 'ramdom3',
-      url: 'https://picsum.photos/200?random=3'
-    },
-    {
-      title: 'ramdom4',
-      url: 'https://picsum.photos/200?random=4'
-    },
-    {
-      title: 'ramdom5',
-      url: 'https://picsum.photos/200?random=5'
-    },
-    { title: 'tst', url: null }
+      id: 'df7c04d6-a63b-11ea-bb37-0242ac130002',
+      title: 'beatstrumentals',
+      url:
+        'https://music.apple.com/jp/playlist/beatstrumentals/pl.f54198ad42404535be13eabf3835fb22'
+    }
   ]
 })
 
 export const mutations = {
-  add(state, title) {
+  add(state, playlist) {
     state.playlists.push({
-      title,
-      url: 'https://picsum.photos/200?random=5'
+      id: playlist.id,
+      title: playlist.title,
+      url: playlist.url
     })
   },
-  remove(state, { playlist }) {
-    state.playlists.splice(state.playlists.indexOf(playlist), 1)
+  edit(state, playlist) {
+    const index = state.playlists.findIndex((e) => e.id === playlist.id)
+    if (index) {
+      state.playlists[index].title = playlist.title
+      state.playlists[index].url = playlist.url
+    }
   }
 }

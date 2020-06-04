@@ -1,9 +1,5 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-btn rounded color="primary" @click.stop="dialog = true">Add</v-btn>
-    </v-row>
-
     <!-- プレイリスト追加ダイアログ -->
     <v-dialog v-model="dialog" max-width="290">
       <v-card>
@@ -38,47 +34,43 @@
     </v-dialog>
 
     <v-row dense>
-      <v-col v-for="playlist in playlists" :key="playlist.title" :cols="3">
-        <v-card>
-          <v-img
-            v-if="playlist.url != null"
-            :src="playlist.url"
-            class="white--text align-end"
-            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-            height="200px"
-          >
-            <template v-slot:placeholder>
-              <v-row class="fill-height ma-0" align="center" justify="center">
-                <v-progress-circular indeterminate color="grey lighten-5" />
-              </v-row>
-            </template>
-            <v-card-title v-text="playlist.title" />
-          </v-img>
+      <v-col v-for="playlist in playlists" :key="playlist.id" :cols="3">
+        <v-card @click="clickCard(playlist)">
+          <v-card-subtitle v-text="playlist.title" />
         </v-card>
       </v-col>
+    </v-row>
+    <v-row>
+      <v-btn rounded class="ma-2" color="primary" @click.stop="clickAdd"
+        >Add</v-btn
+      >
+      <v-btn
+        rounded
+        class="ma-2"
+        color="secondary"
+        :outlined="editing"
+        @click.stop="editing = !editing"
+        >{{ editing ? 'EDITING' : 'EDIT' }}</v-btn
+      >
     </v-row>
   </v-container>
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import uuid from 'uuid'
 
 export default {
   components: {},
   data() {
     return {
       dialog: false,
+      editing: false,
       valid: true,
+      id: '',
       title: '',
-      titleRules: [
-        (v) => !!v || 'Title is required',
-        (v) => (v && v.length <= 10) || 'Title must be less than 10 characters'
-      ],
+      titleRules: [(v) => !!v || 'Title is required'],
       url: '',
-      urlRules: [
-        (v) => !!v || 'URL is required',
-        (v) => (v && v.length <= 10) || 'URL must be less than 10 characters'
-      ]
+      urlRules: [(v) => !!v || 'URL is required']
     }
   },
   computed: {
@@ -87,21 +79,44 @@ export default {
     }
   },
   methods: {
-    addPlaylist() {
-      this.dialog = false
-      console.log('this.title:', this.title)
-      // const playlist = {
-      //   title: this.title,
-      //   url: 'https://picsum.photos/200?random=1'
-      // }
-      // console.log('e.target.value:', e.target.value)
-      this.$store.commit('playlists/add', this.title)
+    clickAdd() {
+      this.dialog = true
+      this.editing = false
     },
-    ...mapMutations({
-      toggle: 'playlists/toggle'
-    }),
+    addPlaylist() {
+      if (!this.validate()) {
+        return
+      }
+      if (this.editing) {
+        this.$store.commit('playlists/edit', {
+          id: this.id,
+          title: this.title,
+          url: this.url
+        })
+      } else {
+        this.$store.commit('playlists/add', {
+          id: uuid(),
+          title: this.title,
+          url: this.url
+        })
+      }
+      this.title = ''
+      this.url = ''
+      this.dialog = false
+    },
+    clickCard(playlist) {
+      if (this.editing) {
+        this.id = playlist.id
+        this.title = playlist.title
+        this.url = playlist.url
+        this.dialog = true
+      } else {
+        // リンクで移動
+        window.location = playlist.url
+      }
+    },
     validate() {
-      this.$refs.form.validate()
+      return this.$refs.form.validate()
     }
   }
 }
