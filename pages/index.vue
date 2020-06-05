@@ -9,22 +9,27 @@
           <v-list-item-content>
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-text-field
-                v-model="title"
-                :rules="titleRules"
-                label="title"
-                required
-              ></v-text-field>
-
-              <v-text-field
                 v-model="url"
                 :rules="urlRules"
                 label="Url"
                 required
+                clearable
+                @input="changeUrl"
               ></v-text-field>
+
+              <v-text-field
+                v-model="title"
+                :rules="titleRules"
+                label="title"
+                required
+                clearable
+              ></v-text-field>
+
               <v-spacer></v-spacer>
               <v-btn color="green lighten-1" text @click="addPlaylist"
                 >Finish</v-btn
               >
+
               <v-btn
                 v-if="editing"
                 color="red lighten-1"
@@ -60,7 +65,6 @@
 </template>
 
 <script>
-/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 import uuid from 'uuid'
 
 export default {
@@ -83,28 +87,20 @@ export default {
     }
   },
   methods: {
-    async clickAdd() {
+    changeUrl(text) {
+      if (text && text.includes('https://music.apple.com/jp/playlist/')) {
+        // タイトルをurlから取得する
+        const split = text.split('/')
+        if (split.length > 6 && split[5]) {
+          const decorded = decodeURI(split[5])
+
+          this.title = decorded
+        }
+      }
+    },
+    clickAdd() {
       this.dialog = true
       this.editing = false
-
-      try {
-        // apple musicがクリップボードにコピーされている場合
-        const clipText = await navigator.clipboard.readText()
-
-        if (clipText.includes('https://music.apple.com/jp/playlist/')) {
-          this.url = clipText
-
-          // タイトルをurlから取得する
-          const split = clipText.split('/')
-          if (split.length > 6 && split[5]) {
-            const decorded = decodeURI(split[5])
-
-            this.title = decorded
-          }
-        }
-      } catch (e) {
-        console.error(e.message)
-      }
     },
     addPlaylist() {
       if (!this.validate()) {
