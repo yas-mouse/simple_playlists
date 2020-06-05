@@ -79,9 +79,27 @@ export default {
     }
   },
   methods: {
-    clickAdd() {
+    async clickAdd() {
       this.dialog = true
       this.editing = false
+
+      try {
+        const clipText = await navigator.clipboard.readText()
+
+        if (clipText.includes('https://music.apple.com/jp/playlist/')) {
+          this.url = clipText
+
+          const split = clipText.split('/')
+          if (split.length > 6 && split[5]) {
+            const decorded = decodeURI(split[5])
+
+            this.title = decorded
+            console.log(decorded)
+          }
+        }
+      } catch (e) {
+        console.log('error:', e.message)
+      }
     },
     addPlaylist() {
       if (!this.validate()) {
