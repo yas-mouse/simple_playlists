@@ -10,7 +10,6 @@
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-text-field
                 v-model="title"
-                :counter="10"
                 :rules="titleRules"
                 label="title"
                 required
@@ -18,7 +17,6 @@
 
               <v-text-field
                 v-model="url"
-                :counter="10"
                 :rules="urlRules"
                 label="Url"
                 required
@@ -64,6 +62,7 @@
 </template>
 
 <script>
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 import uuid from 'uuid'
 
 export default {
@@ -91,21 +90,22 @@ export default {
       this.editing = false
 
       try {
+        // apple musicがクリップボードにコピーされている場合
         const clipText = await navigator.clipboard.readText()
 
         if (clipText.includes('https://music.apple.com/jp/playlist/')) {
           this.url = clipText
 
+          // タイトルをurlから取得する
           const split = clipText.split('/')
           if (split.length > 6 && split[5]) {
             const decorded = decodeURI(split[5])
 
             this.title = decorded
-            console.log(decorded)
           }
         }
       } catch (e) {
-        console.log('error:', e.message)
+        console.error(e.message)
       }
     },
     addPlaylist() {
