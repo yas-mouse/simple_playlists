@@ -46,15 +46,13 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-btn rounded class="ma-2" color="primary" @click.stop="clickAdd"
-        >Add</v-btn
-      >
+      <v-btn rounded class="ma-2" color="primary" @click="clickAdd">Add</v-btn>
       <v-btn
         rounded
         class="ma-2"
         color="secondary"
         :outlined="editing"
-        @click.stop="editing = !editing"
+        @click="editing = !editing"
         >{{ editing ? 'EDITING' : 'EDIT' }}</v-btn
       >
     </v-row>

@@ -105,7 +105,7 @@ export default {
   },
   manifest: {
     name: 'Simple Playlists',
-    short_name: 'SP lists',
+    short_name: 'Simple Playlists',
     title: 'Simple Playlists',
     description: 'シンプルなプレイリスト',
     lang: 'ja',
