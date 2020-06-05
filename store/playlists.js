@@ -23,5 +23,11 @@ export const mutations = {
       state.playlists[index].title = playlist.title
       state.playlists[index].url = playlist.url
     }
+  },
+  remove(state, id) {
+    state.playlists.splice(
+      state.playlists.findIndex((e) => e.id === id),
+      1
+    )
   }
 }

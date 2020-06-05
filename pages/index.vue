@@ -24,8 +24,15 @@
                 required
               ></v-text-field>
               <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="addPlaylist"
+              <v-btn color="green lighten-1" text @click="addPlaylist"
                 >Finish</v-btn
+              >
+              <v-btn
+                v-if="editing"
+                color="red lighten-1"
+                text
+                @click="removePlaylist"
+                >Remove</v-btn
               >
             </v-form>
           </v-list-item-content>
@@ -121,6 +128,18 @@ export default {
       this.title = ''
       this.url = ''
       this.dialog = false
+    },
+    removePlaylist() {
+      if (!this.editing) {
+        return
+      }
+      if (window.confirm('Are you sure?')) {
+        this.$store.commit('playlists/remove', this.id)
+
+        this.title = ''
+        this.url = ''
+        this.dialog = false
+      }
     },
     clickCard(playlist) {
       if (this.editing) {
