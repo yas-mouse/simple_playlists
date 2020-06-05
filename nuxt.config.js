@@ -4,7 +4,7 @@ const routerBase =
   process.env.DEPLOY_ENV === 'GH_PAGES'
     ? {
         router: {
-          base: '/nuxt_pwa/'
+          base: '/simple_playlists/'
         }
       }
     : {}
@@ -26,7 +26,13 @@ export default {
         content: process.env.npm_package_description || ''
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: '/simple_playlists/favicon.ico'
+      }
+    ]
   },
   /*
    ** Customize the progress-bar color
