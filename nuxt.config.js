@@ -1,6 +1,15 @@
 import colors from 'vuetify/es5/util/colors'
 
+const routerBase =
+  process.env.DEPLOY_ENV === 'GH_PAGES'
+    ? {
+        router: {
+          base: '/nuxt_pwa/'
+        }
+      }
+    : {}
 export default {
+  ...routerBase,
   mode: 'spa',
   /*
    ** Headers of the page
