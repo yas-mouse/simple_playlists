@@ -1,6 +1,6 @@
 # simple_playlists
 
-> My luminous Nuxt.js project
+> Apple music のプレイリストを一覧表示する PWA
 
 ## Build Setup
 
