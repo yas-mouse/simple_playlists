@@ -25,6 +25,11 @@
                 clearable
               ></v-text-field>
 
+              <v-text-field
+                v-model="imgUrl"
+                label="image URL"
+                clearable
+              ></v-text-field>
               <v-spacer></v-spacer>
               <v-btn color="green lighten-1" text @click="addPlaylist"
                 >Finish</v-btn
@@ -47,6 +52,8 @@
       <v-col v-for="playlist in playlists" :key="playlist.id" :cols="3">
         <v-card @click="clickCard(playlist)">
           <v-card-subtitle v-text="playlist.title" />
+
+          <v-img v-if="playlist.imgUrl" :src="playlist.imgUrl"></v-img>
         </v-card>
       </v-col>
     </v-row>
@@ -78,7 +85,8 @@ export default {
       title: '',
       titleRules: [(v) => !!v || 'Title is required'],
       url: '',
-      urlRules: [(v) => !!v || 'URL is required']
+      urlRules: [(v) => !!v || 'URL is required'],
+      imgUrl: ''
     }
   },
   computed: {
@@ -91,10 +99,13 @@ export default {
       if (text && text.includes('https://music.apple.com/jp/playlist/')) {
         // タイトルをurlから取得する
         const split = text.split('/')
-        if (split.length > 6 && split[5]) {
+        if (split.length > 5 && split[5]) {
           const decorded = decodeURI(split[5])
 
           this.title = decorded
+        }
+        if (split.length > 6 && split[6]) {
+          this.imgUrl = this.getArtworkUrl(split[6])
         }
       }
     },
@@ -110,17 +121,20 @@ export default {
         this.$store.commit('playlists/edit', {
           id: this.id,
           title: this.title,
-          url: this.url
+          url: this.url,
+          imgUrl: this.imgUrl
         })
       } else {
         this.$store.commit('playlists/add', {
           id: uuid(),
           title: this.title,
-          url: this.url
+          url: this.url,
+          imgUrl: this.imgUrl
         })
       }
       this.title = ''
       this.url = ''
+      this.imgUrl = ''
       this.dialog = false
     },
     removePlaylist() {
@@ -132,6 +146,7 @@ export default {
 
         this.title = ''
         this.url = ''
+        this.imgUrl = ''
         this.dialog = false
       }
     },
@@ -140,6 +155,7 @@ export default {
         this.id = playlist.id
         this.title = playlist.title
         this.url = playlist.url
+        this.imgUrl = playlist.imgUrl
         this.dialog = true
       } else {
         // リンクで移動
@@ -148,6 +164,9 @@ export default {
     },
     validate() {
       return this.$refs.form.validate()
+    },
+    getArtworkUrl(playlistUrl) {
+      return `https://tools.applemusic.com/ja-jp/artwork/${playlistUrl}.jpg?type=playlist&country=jp`
     }
   }
 }
