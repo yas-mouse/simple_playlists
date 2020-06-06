@@ -1,13 +1,14 @@
 export const state = () => ({
   playlists: [
-    {
-      id: 'df7c04d6-a63b-11ea-bb37-0242ac130002',
-      title: 'beatstrumentals',
-      url:
-        'https://music.apple.com/jp/playlist/beatstrumentals/pl.f54198ad42404535be13eabf3835fb22',
-      imgUrl:
-        'https://tools.applemusic.com/ja-jp/artwork/pl.f54198ad42404535be13eabf3835fb22.jpg?type=playlist&country=jp'
-    }
+    /// playlist format is like below.
+    // {
+    //   id: 'df7c04d6-a63b-11ea-bb37-0242ac130002',
+    //   title: 'beatstrumentals',
+    //   url:
+    //     'https://music.apple.com/jp/playlist/beatstrumentals/pl.f54198ad42404535be13eabf3835fb22',
+    //   imgUrl:
+    //     'https://tools.applemusic.com/ja-jp/artwork/pl.f54198ad42404535be13eabf3835fb22.jpg?type=playlist&country=jp'
+    // }
   ]
 })
 

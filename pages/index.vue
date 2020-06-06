@@ -48,15 +48,6 @@
       </v-card>
     </v-dialog>
 
-    <v-row dense>
-      <v-col v-for="playlist in playlists" :key="playlist.id" :cols="3">
-        <v-card @click="clickCard(playlist)">
-          <v-card-subtitle v-text="playlist.title" />
-
-          <v-img v-if="playlist.imgUrl" :src="playlist.imgUrl"></v-img>
-        </v-card>
-      </v-col>
-    </v-row>
     <v-row>
       <v-btn rounded class="ma-2" color="primary" @click="clickAdd">Add</v-btn>
       <v-btn
@@ -67,6 +58,42 @@
         @click="editing = !editing"
         >{{ editing ? 'EDITING' : 'EDIT' }}</v-btn
       >
+      <v-btn
+        rounded
+        class="ma-2"
+        color="blue"
+        :outlined="textShowing"
+        @click="textShowing = !textShowing"
+        >{{ textShowing ? 'SHOWING' : 'SHOW TEXT' }}</v-btn
+      >
+    </v-row>
+    <v-row dense>
+      <v-col
+        v-for="playlist in playlists"
+        :key="playlist.id"
+        :cols="textShowing ? 12 : 3"
+      >
+        <v-card @click="clickCard(playlist)">
+          <div class="d-flex flex-no-wrap justify-space-between">
+            <v-card-subtitle v-if="textShowing" v-text="playlist.title" />
+
+            <v-img
+              v-if="playlist.imgUrl"
+              :src="playlist.imgUrl"
+              :max-width="textShowing ? '20%' : '100%'"
+            >
+              <template v-slot:placeholder>
+                <v-row class="fill-height ma-0" align="center" justify="center">
+                  <v-progress-circular
+                    indeterminate
+                    color="grey lighten-5"
+                  ></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
+          </div>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -80,6 +107,7 @@ export default {
     return {
       dialog: false,
       editing: false,
+      textShowing: false,
       valid: true,
       id: '',
       title: '',
