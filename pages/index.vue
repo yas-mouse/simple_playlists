@@ -91,6 +91,17 @@
                 </v-row>
               </template>
             </v-img>
+            <v-img
+              v-if="!playlist.imgUrl"
+              src="/images/no_image.png"
+              :max-width="textShowing ? '20%' : '100%'"
+            >
+              <v-row align="end" class="lightbox white--text pa-2 fill-height">
+                <div class="subheading pa-2">
+                  {{ playlist.title }}
+                </div>
+              </v-row>
+            </v-img>
           </div>
         </v-card>
       </v-col>
@@ -124,7 +135,13 @@ export default {
   },
   methods: {
     changeUrl(text) {
-      if (text && text.includes('https://music.apple.com/jp/playlist/')) {
+      if (!text) {
+        return
+      }
+      if (
+        text.includes('https://music.apple.com/jp/playlist/') ||
+        text.includes('https://music.apple.com/jp/album/')
+      ) {
         // タイトルをurlから取得する
         const split = text.split('/')
         if (split.length > 5 && split[5]) {
@@ -132,8 +149,23 @@ export default {
 
           this.title = decorded
         }
+
         if (split.length > 6 && split[6]) {
+          if (split[6].match(/^pl./)) {
+            // プレイリストの場合アートワーク画像urlを取得
+            this.imgUrl = this.getArtworkUrl(split[6])
+          } else {
+            // プレイリストでない場合はデフォルト画像
+            this.imgUrl = ''
+          }
           this.imgUrl = this.getArtworkUrl(split[6])
+        }
+      } else if (text && text.includes('https://music.apple.com/jp/album/')) {
+        const split = text.split('/')
+        if (split.length > 5 && split[5]) {
+          const decorded = decodeURI(split[5])
+
+          this.title = decorded
         }
       }
     },
