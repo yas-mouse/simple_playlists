@@ -158,14 +158,6 @@ export default {
             // プレイリストでない場合はデフォルト画像
             this.imgUrl = ''
           }
-          this.imgUrl = this.getArtworkUrl(split[6])
-        }
-      } else if (text && text.includes('https://music.apple.com/jp/album/')) {
-        const split = text.split('/')
-        if (split.length > 5 && split[5]) {
-          const decorded = decodeURI(split[5])
-
-          this.title = decorded
         }
       }
     },
@@ -226,7 +218,7 @@ export default {
       return this.$refs.form.validate()
     },
     getArtworkUrl(playlistUrl) {
-      return `https://tools.applemusic.com/ja-jp/artwork/${playlistUrl}.jpg?type=playlist&country=jp`
+      return `https://tools.applemusic.com/ja-jp/artwork/${playlistUrl}.jpg`
     }
   }
 }
