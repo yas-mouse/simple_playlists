@@ -78,8 +78,8 @@
             <v-card-subtitle v-if="textShowing" v-text="playlist.title" />
 
             <v-img
-              v-if="playlist.imgUrl"
-              :src="playlist.imgUrl"
+              v-if="playlist.img"
+              :src="playlist.img"
               :max-width="textShowing ? '20%' : '100%'"
             >
               <template v-slot:placeholder>
@@ -125,7 +125,8 @@ export default {
       titleRules: [(v) => !!v || 'Title is required'],
       url: '',
       urlRules: [(v) => !!v || 'URL is required'],
-      imgUrl: ''
+      imgUrl: '',
+      img: null
     }
   },
   computed: {
@@ -154,9 +155,24 @@ export default {
           if (split[6].match(/^pl./)) {
             // プレイリストの場合アートワーク画像urlを取得
             this.imgUrl = this.getArtworkUrl(split[6])
+
+            this.$axios
+              .get('/api/' + split[6] + '.jpg', {
+                responseType: 'arraybuffer',
+                headers: { 'Content-Type': 'image/jpeg' }
+              })
+              .then((res) => {
+                const prefix = `data:${res.headers['content-type']};base64,`
+                const base64 = Buffer.from(res.data, 'binary').toString(
+                  'base64'
+                )
+                console.log('finished!!')
+                this.img = prefix + base64
+              })
           } else {
             // プレイリストでない場合はデフォルト画像
             this.imgUrl = ''
+            this.img = null
           }
         }
       }
@@ -174,19 +190,22 @@ export default {
           id: this.id,
           title: this.title,
           url: this.url,
-          imgUrl: this.imgUrl
+          imgUrl: this.imgUrl,
+          img: this.img
         })
       } else {
         this.$store.commit('playlists/add', {
           id: uuid(),
           title: this.title,
           url: this.url,
-          imgUrl: this.imgUrl
+          imgUrl: this.imgUrl,
+          img: this.img
         })
       }
       this.title = ''
       this.url = ''
       this.imgUrl = ''
+      // this.img = null
       this.dialog = false
     },
     removePlaylist() {
