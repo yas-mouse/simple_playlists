@@ -175,9 +175,7 @@ export default {
         // タイトルをurlから取得する
         const split = text.split('/')
         if (split.length > 5 && split[5]) {
-          const decorded = decodeURI(split[5])
-
-          this.title = decorded
+          this.title = decodeURI(split[5])
         }
 
         if (split.length > 6 && split[6]) {
@@ -251,8 +249,11 @@ export default {
       return this.$refs.form.validate()
     },
     getArtworkUrl(playlistUrl) {
-      return `/api/${playlistUrl}.jpg`
-      // return `https://tools.applemusic.com/ja-jp/artwork/${playlistUrl}.jpg`
+      if (process.env.DEPLOY_ENV === 'GH_PAGES') {
+        return `https://tools.applemusic.com/ja-jp/artwork/${playlistUrl}.jpg`
+      } else {
+        return `/api/${playlistUrl}.jpg`
+      }
     },
     storeImage(id, imgUrl) {
       this.$axios
