@@ -18,8 +18,7 @@ export const mutations = {
       id: playlist.id,
       title: playlist.title,
       url: playlist.url,
-      imgUrl: playlist.imgUrl,
-      img: playlist.img
+      imgUrl: playlist.imgUrl
     })
   },
   edit(state, playlist) {
@@ -28,7 +27,6 @@ export const mutations = {
       state.playlists[index].title = playlist.title
       state.playlists[index].url = playlist.url
       state.playlists[index].imgUrl = playlist.imgUrl
-      state.playlists[index].img = playlist.img
     }
   },
   remove(state, id) {

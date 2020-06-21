@@ -113,22 +113,7 @@ export default {
   },
   workbox: {
     dev: true,
-    offline: false,
-    runtimeCaching: [
-      {
-        urlPattern: 'https://tools.applemusic.com/ja-jp/artwork/.*',
-        handler: 'cacheFirst',
-        method: 'GET',
-        strategyOptions: {
-          cacheExpiration: {
-            maxAgeSeconds: 60 * 60 * 24 * 7 // 7日
-          },
-          cacheableResponse: {
-            statuses: [200]
-          }
-        }
-      }
-    ]
+    offline: false
   },
   manifest: {
     name: 'Simple Playlists',

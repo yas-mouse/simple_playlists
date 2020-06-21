@@ -78,8 +78,8 @@
             <v-card-subtitle v-if="textShowing" v-text="playlist.title" />
 
             <v-img
-              v-if="playlist.img"
-              :src="playlist.img"
+              v-if="playlist.imgUrl"
+              :src="getImage(playlist.id)"
               :max-width="textShowing ? '20%' : '100%'"
             >
               <template v-slot:placeholder>
@@ -114,6 +114,35 @@ import uuid from 'uuid'
 
 export default {
   components: {},
+  asyncData() {
+    const request = indexedDB.open('MyDatabase')
+    request.onupgradeneeded = function(event) {
+      event.currentTarget.result.createObjectStore('images', {
+        keyPath: 'id',
+        autoIncrement: true
+      })
+    }
+    request.onerror = function(event) {
+      alert('なぜ私の ウェブアプリで IndexedDB を使わせてくれないのですか?!')
+    }
+
+    // 画像データ取得
+    const imageData = []
+    request.onsuccess = function(event) {
+      const db = event.target.result
+      const store = db.transaction(['images'], 'readonly').objectStore('images')
+
+      store.openCursor().onsuccess = function(event) {
+        const cursor = event.target.result
+
+        if (cursor) {
+          imageData.push(cursor.value)
+          cursor.continue()
+        }
+      }
+    }
+    return { imageData }
+  },
   data() {
     return {
       dialog: false,
@@ -126,7 +155,7 @@ export default {
       url: '',
       urlRules: [(v) => !!v || 'URL is required'],
       imgUrl: '',
-      img: null
+      imageData: []
     }
   },
   computed: {
@@ -155,24 +184,9 @@ export default {
           if (split[6].match(/^pl./)) {
             // プレイリストの場合アートワーク画像urlを取得
             this.imgUrl = this.getArtworkUrl(split[6])
-
-            this.$axios
-              .get('/api/' + split[6] + '.jpg', {
-                responseType: 'arraybuffer',
-                headers: { 'Content-Type': 'image/jpeg' }
-              })
-              .then((res) => {
-                const prefix = `data:${res.headers['content-type']};base64,`
-                const base64 = Buffer.from(res.data, 'binary').toString(
-                  'base64'
-                )
-                console.log('finished!!')
-                this.img = prefix + base64
-              })
           } else {
             // プレイリストでない場合はデフォルト画像
             this.imgUrl = ''
-            this.img = null
           }
         }
       }
@@ -190,22 +204,22 @@ export default {
           id: this.id,
           title: this.title,
           url: this.url,
-          imgUrl: this.imgUrl,
-          img: this.img
+          imgUrl: this.imgUrl
         })
       } else {
+        const id = uuid()
         this.$store.commit('playlists/add', {
-          id: uuid(),
+          id,
           title: this.title,
           url: this.url,
-          imgUrl: this.imgUrl,
-          img: this.img
+          imgUrl: this.imgUrl
         })
+
+        this.storeImage(id, this.imgUrl)
       }
       this.title = ''
       this.url = ''
       this.imgUrl = ''
-      // this.img = null
       this.dialog = false
     },
     removePlaylist() {
@@ -237,7 +251,46 @@ export default {
       return this.$refs.form.validate()
     },
     getArtworkUrl(playlistUrl) {
-      return `https://tools.applemusic.com/ja-jp/artwork/${playlistUrl}.jpg`
+      return `/api/${playlistUrl}.jpg`
+      // return `https://tools.applemusic.com/ja-jp/artwork/${playlistUrl}.jpg`
+    },
+    storeImage(id, imgUrl) {
+      this.$axios
+        .get(imgUrl, {
+          responseType: 'arraybuffer',
+          headers: { 'Content-Type': 'image/jpeg' }
+        })
+        .then((res) => {
+          // 画像を文字化
+          const prefix = `data:${res.headers['content-type']};base64,`
+          const base64 = Buffer.from(res.data, 'binary').toString('base64')
+          const image = prefix + base64
+          const data = { id, image }
+
+          // ローカルの配列に保存しておく
+          this.imageData.push(data)
+
+          const request = indexedDB.open('MyDatabase')
+          request.onsuccess = function(event) {
+            const db = event.target.result
+            const transact = db.transaction(['images'], 'readwrite')
+            const store = transact.objectStore('images')
+
+            const putRequest = store.put(data)
+
+            putRequest.onsuccess = function() {
+              console.log('succeeded to store image')
+            }
+          }
+        })
+    },
+    getImage(id) {
+      const data = this.imageData.find((e) => e.id === id)
+      if (data) {
+        return data.image
+      } else {
+        return '/images/no_image.png'
+      }
     }
   }
 }
