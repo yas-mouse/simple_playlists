@@ -68,7 +68,15 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    proxy: true
+  },
+  proxy: {
+    '/api/': {
+      target: 'https://tools.applemusic.com/en-us/artwork',
+      pathRewrite: { '^/api/': '' }
+    }
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
@@ -105,22 +113,7 @@ export default {
   },
   workbox: {
     dev: true,
-    offline: false,
-    runtimeCaching: [
-      {
-        urlPattern: 'https://tools.applemusic.com/ja-jp/artwork/.*',
-        handler: 'cacheFirst',
-        method: 'GET',
-        strategyOptions: {
-          cacheExpiration: {
-            maxAgeSeconds: 60 * 60 * 24 * 7 // 7日
-          },
-          cacheableResponse: {
-            statuses: [200]
-          }
-        }
-      }
-    ]
+    offline: false
   },
   manifest: {
     name: 'Simple Playlists',
