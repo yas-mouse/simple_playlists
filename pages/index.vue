@@ -249,11 +249,8 @@ export default {
       return this.$refs.form.validate()
     },
     getArtworkUrl(playlistUrl) {
-      if (process.env.DEPLOY_ENV === 'GH_PAGES') {
-        return `https://tools.applemusic.com/ja-jp/artwork/${playlistUrl}.jpg`
-      } else {
-        return `/api/${playlistUrl}.jpg`
-      }
+      return `/api/${playlistUrl}.jpg`
+      // return `https://tools.applemusic.com/ja-jp/artwork/${playlistUrl}.jpg`
     },
     storeImage(id, imgUrl) {
       this.$axios
